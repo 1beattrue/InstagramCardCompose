@@ -55,10 +55,13 @@ fun InstagramProfileCard() {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .padding(8.dp),
                 painter = painterResource(id = R.drawable.ic_instagram),
                 contentDescription = "Instagram icon",
-                modifier = Modifier
-                    .size(64.dp),
             )
 
             UserStatistics(title = "Posts", value = "6,950")
