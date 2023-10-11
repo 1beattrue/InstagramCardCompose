@@ -39,20 +39,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Preview
-@Composable
-fun TestText() {
-    Text(
-        buildAnnotatedString {
-            append("Hello")
-            append(" ")
-
-            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                append("world")
-            }
-
-            append("!")
-        }
-    )
-}
