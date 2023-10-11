@@ -15,6 +15,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edu.mirea.onebeattrue.instagramcardcompose.ui.theme.InstagramCardComposeTheme
@@ -36,3 +40,19 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Preview
+@Composable
+fun TestText() {
+    Text(
+        buildAnnotatedString {
+            append("Hello")
+            append(" ")
+
+            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                append("world")
+            }
+
+            append("!")
+        }
+    )
+}
