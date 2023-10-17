@@ -49,26 +49,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-@Preview
-@Composable
-fun TestImage() {
-    Box(
-        modifier = Modifier
-            .size(200.dp)
-            .background(Color.Cyan)
-    ) {
-        Image(
-            modifier = Modifier
-                .background(Color.Green)
-                .padding(25.dp)
-                .size(100.dp)
-                .background(Color.Red)
-                .padding(25.dp),
-            painter = ColorPainter(Color.Yellow),
-            contentDescription = "простите, слепые люди",
-            contentScale = ContentScale.Crop
-
-        )
-    }
-}
