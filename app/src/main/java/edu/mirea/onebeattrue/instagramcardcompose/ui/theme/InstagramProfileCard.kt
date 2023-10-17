@@ -1,6 +1,5 @@
 package edu.mirea.onebeattrue.instagramcardcompose.ui.theme
 
-import android.view.View.OnClickListener
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,9 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,13 +30,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import edu.mirea.onebeattrue.instagramcardcompose.MainViewModel
 import edu.mirea.onebeattrue.instagramcardcompose.R
 
 @Composable
-fun InstagramProfileCard() {
-    val isFollowed = rememberSaveable {
-        mutableStateOf(false)
-    }
+fun InstagramProfileCard(
+    viewModel: MainViewModel
+) {
+    val isFollowed = viewModel.isFollowing.observeAsState(false) // есть impl
 
     Card(
         modifier = Modifier
@@ -88,7 +86,7 @@ fun InstagramProfileCard() {
                 fontSize = 12.sp
             )
             FollowButton(isFollowed = isFollowed.value) {
-                isFollowed.value = !isFollowed.value
+                viewModel.changeFollowingStatus()
             }
         }
     }
@@ -142,7 +140,7 @@ private fun UserStatistics(
 @Composable
 fun PreviewCardLight() {
     InstagramCardComposeTheme(darkTheme = false) {
-        InstagramProfileCard()
+        InstagramProfileCard(MainViewModel())
     }
 }
 
@@ -150,6 +148,6 @@ fun PreviewCardLight() {
 @Composable
 fun PreviewCardDark() {
     InstagramCardComposeTheme(darkTheme = true) {
-        InstagramProfileCard()
+        InstagramProfileCard(MainViewModel())
     }
 }
