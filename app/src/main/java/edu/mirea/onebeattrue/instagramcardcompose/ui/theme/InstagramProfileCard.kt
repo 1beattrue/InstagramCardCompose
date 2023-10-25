@@ -19,12 +19,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,22 +38,7 @@ import edu.mirea.onebeattrue.instagramcardcompose.R
 fun InstagramProfileCard(
     viewModel: MainViewModel
 ) {
-    val isFollowed = viewModel.isFollowing.observeAsState(false)
-
-    //**********************************************************************************************
-    // небольшой теоретический момент
-
-    val a: MutableState<Int> = rememberSaveable {
-        mutableIntStateOf(5)
-    }
-    a.value = 10
-
-    var b: Int by rememberSaveable { // использование делегатов (добавляются методы getValue() и setValue())
-        mutableIntStateOf(5)
-    }
-    b = 10
-
-    //**********************************************************************************************
+    val isFollowed by viewModel.isFollowing.observeAsState(false)
 
     Card(
         modifier = Modifier
@@ -105,7 +86,7 @@ fun InstagramProfileCard(
                 text = "www.facebook.com/emotional_health",
                 fontSize = 12.sp
             )
-            FollowButton(isFollowed = isFollowed.value) {
+            FollowButton(isFollowed = isFollowed) {
                 viewModel.changeFollowingStatus()
             }
         }
