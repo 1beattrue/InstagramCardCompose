@@ -1,5 +1,6 @@
 package edu.mirea.onebeattrue.instagramcardcompose.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -38,7 +40,7 @@ import edu.mirea.onebeattrue.instagramcardcompose.R
 fun InstagramProfileCard(
     viewModel: MainViewModel
 ) {
-    val isFollowed by viewModel.isFollowing.observeAsState(false)
+    val isFollowed = viewModel.isFollowing.observeAsState(false)
 
     Card(
         modifier = Modifier
@@ -95,20 +97,20 @@ fun InstagramProfileCard(
 
 @Composable
 private fun FollowButton( // stateless функция - не хранит state и не меняет его - хорошая практика
-    isFollowed: Boolean,
+    isFollowed: State<Boolean>,
     clickListener: () -> Unit
 ) {
     Button(
         onClick = { clickListener() },
         shape = RoundedCornerShape(4.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isFollowed)
+            containerColor = if (isFollowed.value)
                 MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             else
                 MaterialTheme.colorScheme.primary
         )
     ) {
-        val text = if (isFollowed) "Unfollow" else "Follow"
+        val text = if (isFollowed.value) "Unfollow" else "Follow"
         Text(text = text)
     }
 }
