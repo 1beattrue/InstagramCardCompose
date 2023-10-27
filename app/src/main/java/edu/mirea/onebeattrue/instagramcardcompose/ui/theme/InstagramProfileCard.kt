@@ -1,6 +1,5 @@
 package edu.mirea.onebeattrue.instagramcardcompose.ui.theme
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,15 +31,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import edu.mirea.onebeattrue.instagramcardcompose.MainViewModel
+import edu.mirea.onebeattrue.instagramcardcompose.presentation.MainViewModel
 import edu.mirea.onebeattrue.instagramcardcompose.R
+import edu.mirea.onebeattrue.instagramcardcompose.domain.InstagramModel
 
 @Composable
 fun InstagramProfileCard(
-    viewModel: MainViewModel
+    model: InstagramModel,
+    onFollowedButtonClickListener: (InstagramModel) -> Unit
 ) {
-    val isFollowed = viewModel.isFollowing.observeAsState(false)
-
     Card(
         modifier = Modifier
             .padding(8.dp),
@@ -76,20 +74,20 @@ fun InstagramProfileCard(
                 UserStatistics(title = "Following", value = "76")
             }
             Text(
-                text = "Instagram",
+                text = "Instagram ${model.id}",
                 fontFamily = FontFamily.Cursive,
                 fontSize = 32.sp
             )
             Text(
-                text = "#YoursToMake",
+                text = "#${model.title}",
                 fontSize = 12.sp
             )
             Text(
                 text = "www.facebook.com/emotional_health",
                 fontSize = 12.sp
             )
-            FollowButton(isFollowed = isFollowed) {
-                viewModel.changeFollowingStatus()
+            FollowButton(isFollowed = model.isFollowed) {
+                onFollowedButtonClickListener(model)
             }
         }
     }
@@ -97,20 +95,20 @@ fun InstagramProfileCard(
 
 @Composable
 private fun FollowButton( // stateless функция - не хранит state и не меняет его - хорошая практика
-    isFollowed: State<Boolean>,
+    isFollowed: Boolean,
     clickListener: () -> Unit
 ) {
     Button(
         onClick = { clickListener() },
         shape = RoundedCornerShape(4.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (isFollowed.value)
+            containerColor = if (isFollowed)
                 MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
             else
                 MaterialTheme.colorScheme.primary
         )
     ) {
-        val text = if (isFollowed.value) "Unfollow" else "Follow"
+        val text = if (isFollowed) "Unfollow" else "Follow"
         Text(text = text)
     }
 }
@@ -143,7 +141,7 @@ private fun UserStatistics(
 @Composable
 fun PreviewCardLight() {
     InstagramCardComposeTheme(darkTheme = false) {
-        InstagramProfileCard(MainViewModel())
+        InstagramProfileCard(InstagramModel(0, "", false)) {}
     }
 }
 
@@ -151,6 +149,6 @@ fun PreviewCardLight() {
 @Composable
 fun PreviewCardDark() {
     InstagramCardComposeTheme(darkTheme = true) {
-        InstagramProfileCard(MainViewModel())
+        InstagramProfileCard(InstagramModel(0, "", false)) {}
     }
 }
