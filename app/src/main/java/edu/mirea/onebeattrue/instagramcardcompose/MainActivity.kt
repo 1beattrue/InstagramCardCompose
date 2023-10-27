@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.movableContentOf
@@ -50,28 +51,8 @@ private fun Test(viewModel: MainViewModel) {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-                item {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_instagram),
-                        contentDescription = null
-                    )
-                }
-                repeat(5) {
-                    item {
-                        InstagramProfileCard(viewModel)
-                    }
-                }
-                item {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_instagram),
-                        contentDescription = null,
-
-                    )
-                }
-                repeat(5) {
-                    item {
-                        InstagramProfileCard(viewModel)
-                    }
+                items(500) {
+                    InstagramProfileCard(viewModel = viewModel)
                 }
             }
         }
