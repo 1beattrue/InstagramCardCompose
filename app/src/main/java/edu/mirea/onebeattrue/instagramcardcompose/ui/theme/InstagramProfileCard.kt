@@ -76,7 +76,7 @@ fun InstagramProfileCard(
             Text(
                 text = "Instagram ${model.id}",
                 fontFamily = FontFamily.Cursive,
-                fontSize = 32.sp
+                fontSize = 24.sp
             )
             Text(
                 text = "#${model.title}",
