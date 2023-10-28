@@ -7,30 +7,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.KeyboardArrowUp
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import edu.mirea.onebeattrue.instagramcardcompose.ui.theme.InstagramCardComposeTheme
 import edu.mirea.onebeattrue.instagramcardcompose.ui.theme.InstagramProfileCard
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
@@ -46,6 +40,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Test(viewModel: MainViewModel) {
     InstagramCardComposeTheme {
@@ -55,31 +50,43 @@ private fun Test(viewModel: MainViewModel) {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             val models = viewModel.models.observeAsState(listOf())
-            val lazyListState = rememberLazyListState()
-            val scope = rememberCoroutineScope()
-            LazyColumn(
-                state = lazyListState
-            ) {
-                items(models.value) { model ->
-                    InstagramProfileCard(
-                        model = model,
-                        onFollowedButtonClickListener = viewModel::changeFollowingStatus
-                    )
-                }
-            }
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomEnd
-            ) {
-                FloatingActionButton(
-                    modifier = Modifier.padding(8.dp),
-                    onClick = {
-                        scope.launch {
-                            lazyListState.animateScrollToItem(0)
-                        }
+            LazyColumn {
+                // ВАЖНЫЙ МОМЕНТ: используем key, чтобы номер composable функции совпадал с индексом модели
+                // если этого не сделать, нумерация функций после каждого удаления будет пересчитываться
+                // тогда при удалении первого элемента dismissState первой функции будет помнить, что ее надо удалить
+                items(models.value, key = { it.id }) { model ->
+                    val dismissState = rememberDismissState()
+
+                    if (dismissState.isDismissed(DismissDirection.EndToStart)) {
+                        viewModel.delete(model)
                     }
-                ) {
-                    Icon(Icons.Rounded.KeyboardArrowUp, contentDescription = null)
+
+                    SwipeToDismiss(
+                        state = dismissState,
+                        directions = setOf(DismissDirection.EndToStart),
+                        background = {
+                            Box(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxSize()
+                                    .background(Color.Red.copy(alpha = 0.5f)),
+                                contentAlignment = Alignment.CenterEnd
+                            ) {
+                                Text(
+                                    text = "Delete",
+                                    color = Color.White,
+                                    fontSize = 24.sp,
+                                    modifier = Modifier.padding(16.dp)
+                                )
+                            }
+                        },
+                        dismissContent = {
+                            InstagramProfileCard(
+                                model = model,
+                                onFollowedButtonClickListener = viewModel::changeFollowingStatus
+                            )
+                        }
+                    )
                 }
             }
         }
